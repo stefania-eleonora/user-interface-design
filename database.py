@@ -3,7 +3,7 @@ from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 from PyQt6.QtWidgets import QMessageBox
 
 def setup_database():
-    # 1. Configurare conexiune SQLite
+    #conexiune
     db = QSqlDatabase.addDatabase("QSQLITE")
     db.setDatabaseName("app_data.db")
 
@@ -17,7 +17,7 @@ def setup_database():
 
     query = QSqlQuery()
 
-    # 2. Creare tabel utilizatori (dacă nu există)
+    # creare tabel users
     query.exec("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +26,7 @@ def setup_database():
         )
     """)
 
-    # 3. Creare tabel notițe (dacă nu există)
+    #creare tabel notite
     query.exec("""
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,7 +40,7 @@ def setup_database():
         )
     """)
 
-    # 4. Inserare utilizator implicit (pentru a avea ID = 1 la rulare fără login)
+    #creare user implicit
     query.exec("""
         INSERT OR IGNORE INTO users (id, name, password) 
         VALUES (1, 'Utilizator Principal', 'admin')

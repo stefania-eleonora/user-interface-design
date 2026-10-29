@@ -83,7 +83,7 @@ class PaginaStart(QWidget):
     def __init__(self):
         super().__init__()
         self.calendar = None
-        self.current_user_id = 1  # ID implicit fără autentificare
+        self.current_user_id = 1
         self.current_font_size = 11
         self.current_theme_index = 0
         self.init_ui()
@@ -146,8 +146,8 @@ class PaginaStart(QWidget):
         layout_notes.addWidget(btn_add_note)
 
         notes_action_layout = QHBoxLayout()
-        btn_star_selected = QPushButton("⭐ Adaugă / Elimină Favorit")
-        btn_delete_selected = QPushButton("🗑️ Mută în Coșul de Gunoi")
+        btn_star_selected = QPushButton("Adaugă / Elimină Favorit")
+        btn_delete_selected = QPushButton("Mută în Coșul de Gunoi")
         btn_star_selected.clicked.connect(lambda: self.toggle_favorite(self.list_notes))
         btn_delete_selected.clicked.connect(lambda: self.move_to_trash(self.list_notes))
         notes_action_layout.addWidget(btn_star_selected)
@@ -242,10 +242,10 @@ class PaginaStart(QWidget):
                     self.list_trash.addItem(item)
                 else:
                     if is_starred == 1:
-                        item.setText(f"⭐ {item_str}")
+                        item.setText(f"{item_str}")
                         self.list_notes.addItem(item)
 
-                        fav_item = QListWidgetItem(f"⭐ {item_str}")
+                        fav_item = QListWidgetItem(f"{item_str}")
                         fav_item.setData(Qt.ItemDataRole.UserRole, note_id)
                         self.list_favorites.addItem(fav_item)
                     else:
@@ -348,9 +348,6 @@ class PaginaStart(QWidget):
             query.exec()
             self.load_notes()
 
-    # -----------------------------------------------------------------
-    # ACOMANIERE CALENDAR
-    # -----------------------------------------------------------------
     def on_calendar_date_selected(self):
         selected_date = self.calendar.selectedDate().toString("yyyy-MM-dd")
         self.label_cal_date.setText(f"Notițe cu termen limită în data de {selected_date}:")
@@ -371,9 +368,7 @@ class PaginaStart(QWidget):
         if not found:
             self.list_calendar_notes.addItem("Nicio notiță programată pentru această zi.")
 
-    # -----------------------------------------------------------------
-    # FUNCȚIONALITĂȚI ACCESIBILITATE
-    # -----------------------------------------------------------------
+
     def open_accessibility_dialog(self):
         dialog = AccessibilityDialog(self.current_font_size, self.current_theme_index, self)
         if dialog.exec():
@@ -383,31 +378,58 @@ class PaginaStart(QWidget):
             self.apply_accessibility_settings()
 
     def apply_accessibility_settings(self):
-        base_style = f"font-size: {self.current_font_size}pt;\n"
+        base_style = f"* {{ font-size: {self.current_font_size}pt; }}\n"
 
-        if self.current_theme_index == 1:
+        if self.current_theme_index == 1:  # High Contrast (Yellow on Black)
             theme_style = """
                 QWidget { background-color: #000000; color: #FFFF00; }
-                QPushButton { background-color: #1a1a1a; color: #FFFF00; border: 2px solid #FFFF00; }
-                QListWidget, QCalendarWidget { background-color: #000000; color: #FFFF00; border: 1px solid #FFFF00; }
+                QFrame#sidebarFrame { background-color: #111111; color: #FFFF00; }
+                QPushButton { background-color: #1a1a1a; color: #FFFF00; border: 2px solid #FFFF00; padding: 6px; }
+                QPushButton#sidebarBtn { background-color: transparent; color: #FFFF00; border: none; text-align: left; padding: 10px; }
+                QPushButton#sidebarBtn:hover { background-color: #333333; }
+                QListWidget { background-color: #000000; color: #FFFF00; border: 1px solid #FFFF00; }
             """
-        elif self.current_theme_index == 2:
+        elif self.current_theme_index == 2:  # Dark Mode
             theme_style = """
                 QWidget { background-color: #1e1e1e; color: #ffffff; }
-                QPushButton { background-color: #2d2d2d; color: #ffffff; border: 1px solid #3d3d3d; }
-                QListWidget { background-color: #252526; color: #ffffff; }
+                QFrame#sidebarFrame { background-color: #252526; }
+                QPushButton { background-color: #2d2d2d; color: #ffffff; border: 1px solid #3d3d3d; padding: 6px; }
+                QPushButton#sidebarBtn { background-color: transparent; color: #ffffff; border: none; text-align: left; padding: 10px; }
+                QPushButton#sidebarBtn:hover { background-color: #3e3e42; }
+                QListWidget { background-color: #252526; color: #ffffff; border: 1px solid #3d3d3d; }
             """
-        elif self.current_theme_index == 3:
+        elif self.current_theme_index == 3:  # Tritanopia
             theme_style = """
-                QWidget { background-color: #002b36; color: #2aa198; }
-                QPushButton { background-color: #073642; color: #b58900; border: 1px solid #b58900; }
+                QWidget { background-color: #002b36; color: #93a1a1; }
+                QFrame#sidebarFrame { background-color: #073642; }
+                QPushButton { background-color: #073642; color: #b58900; border: 1px solid #b58900; padding: 6px; }
+                QPushButton#sidebarBtn { background-color: transparent; color: #2aa198; border: none; text-align: left; padding: 10px; }
+                QPushButton#sidebarBtn:hover { background-color: #002b36; }
+                QListWidget { background-color: #073642; color: #93a1a1; border: 1px solid #586e75; }
             """
-        elif self.current_theme_index == 4:
+        elif self.current_theme_index == 4:  # Monocrom
             theme_style = """
                 QWidget { background-color: #f0f0f0; color: #111111; }
-                QPushButton { background-color: #e0e0e0; color: #000000; border: 1px solid #888888; }
+                QFrame#sidebarFrame { background-color: #d6d6d6; }
+                QPushButton { background-color: #e0e0e0; color: #000000; border: 1px solid #888888; padding: 6px; }
+                QPushButton#sidebarBtn { background-color: transparent; color: #111111; border: none; text-align: left; padding: 10px; }
+                QPushButton#sidebarBtn:hover { background-color: #bfbfbf; }
+                QListWidget { background-color: #ffffff; color: #000000; border: 1px solid #888888; }
             """
-        else:
-            theme_style = ""
+        else:  # Standard
+            theme_style = """
+                QFrame#sidebarFrame { background-color: #2c3e50; color: white; }
+                QPushButton#sidebarBtn {
+                    background-color: transparent;
+                    color: white;
+                    text-align: left;
+                    padding: 10px;
+                    border: none;
+                }
+                QPushButton#sidebarBtn:hover {
+                    background-color: #34495e;
+                    border-radius: 5px;
+                }
+            """
 
         self.setStyleSheet(base_style + theme_style)

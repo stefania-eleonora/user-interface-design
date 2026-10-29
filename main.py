@@ -10,7 +10,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("TaskFlow - Management Notițe")
         self.resize(900, 600)
 
-        # Încărcăm direct Pagina Principală
         self.pagina_start = PaginaStart()
         self.setCentralWidget(self.pagina_start)
 
